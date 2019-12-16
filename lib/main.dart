@@ -28,6 +28,7 @@ class ScrollTestState extends State<ScrollTest> {
   ItemScrollController itemScrollController;
   int currentitem = 75;
   int numitems = 100;
+  bool autoScroll = true;
   Duration delay = Duration(
       seconds: 1
   );
@@ -65,6 +66,7 @@ class ScrollTestState extends State<ScrollTest> {
                       child: Text('Item $index'),
                       onPressed: () {
                         setState(() {
+                          autoScroll = false;
                           currentitem = index;
                         });
                       },
@@ -73,6 +75,7 @@ class ScrollTestState extends State<ScrollTest> {
                 },
                 index: currentitem,
                 scrollDirection: Axis.horizontal,
+                autoScroll: autoScroll,
                 prefixWidget: GestureDetector(
                   child: Icon(
                     Icons.arrow_left,
@@ -80,6 +83,7 @@ class ScrollTestState extends State<ScrollTest> {
                   onTap: () {
                     if (currentitem > 0) {
                       setState(() {
+                        autoScroll = true;
                         currentitem--;
                       });
                     }
@@ -92,6 +96,7 @@ class ScrollTestState extends State<ScrollTest> {
                   onTap: () {
                     if (currentitem < numitems) {
                       setState(() {
+                        autoScroll = true;
                         currentitem++;
                       });
                     }
@@ -125,6 +130,7 @@ class ScrollListView extends StatefulWidget {
     @required this.itemBuilder,
     this.index = 0,
     this.scrollDirection = Axis.horizontal,
+    this.autoScroll = true,
     this.prefixWidget,
     this.suffixWidget,
     this.animationDelay = const Duration(
@@ -136,6 +142,7 @@ class ScrollListView extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
   final int index;
   final Axis scrollDirection;
+  final bool autoScroll;
   final Widget prefixWidget;
   final Widget suffixWidget;
   final Duration animationDelay;
@@ -181,7 +188,7 @@ class ScrollListViewState extends State<ScrollListView> {
   }
 
   List<Widget> _content() {
-    if (_allowEvents) itemScrollController.scrollTo(
+    if (_allowEvents && widget.autoScroll) itemScrollController.scrollTo(
       index: widget.index,
       duration: widget.animationDelay,
     );
